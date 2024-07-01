@@ -1,4 +1,5 @@
 import Person from "./Person";
+import { md5 } from "js-md5";
 
 export default class Employe extends Person {
   private _startedAt: number;
@@ -10,17 +11,17 @@ export default class Employe extends Person {
     firstname: string;
     lastname: string;
     gender?: string;
+    password: string;
     startedAt: number;
     userCode: string;
-    password: string;
     access: string;
   }) {
     super(props);
 
     this._startedAt = props.startedAt;
     this._userCode = props.userCode;
-    this._password = props.password;
     this._access = props.access;
+    this._password = props.password;
   }
 
   public get startedAt(): number {
@@ -39,12 +40,12 @@ export default class Employe extends Person {
     this._userCode = value;
   }
 
-  public get password(): string {
+  public get password(): string | null {
     return this._password;
   }
 
   public set password(value: string) {
-    this._password = value;
+    this._password = md5(value);
   }
 
   public get access(): string {

@@ -5,7 +5,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,27 +13,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  password: z.string().min(2, {
-    message: "Password must be at least 2 characters.",
-  }),
-});
+import authFormSchema from "../schemas/authFormSchema";
+import authenticate from "../actions/authentication";
+import { useState } from "react";
 
 export default function LoginForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [responseMsg, setResponseMsg] = useState("");
+  const form = useForm<z.infer<typeof authFormSchema>>({
+    resolver: zodResolver(authFormSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+  function onSubmit(values: z.infer<typeof authFormSchema>) {
+    authenticate(values).then((data) => setResponseMsg(data?.msg));
   }
 
   return (
@@ -45,7 +39,7 @@ export default function LoginForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>UserCode</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -66,7 +60,10 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div className="grid gap-3">
+          <Button type="submit">Submit</Button>
+          <span>{responseMsg}</span>
+        </div>
       </form>
     </Form>
   );

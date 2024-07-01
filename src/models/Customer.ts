@@ -1,5 +1,6 @@
 import CreditCard from "./CreditCard";
 import Person from "./Person";
+import { md5 } from "js-md5";
 
 export default class Customer extends Person {
   protected _email: string;
