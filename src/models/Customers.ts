@@ -21,7 +21,7 @@ export default class Customers {
     return [...this.collection];
   }
 
-  public create(customerData: EditCustomerFormSchema) {
+  public create(customerData: EditCustomerFormSchema): Customer[] {
     this.collection.push(
       new Customer({
         id: this.collection.length + 1,
@@ -35,7 +35,7 @@ export default class Customers {
     return [...this.collection];
   }
 
-  public edit(customerData: EditCustomerFormSchema) {
+  public edit(customerData: EditCustomerFormSchema): Customer[] {
     const customer = this.collection.find(
       (customer) => customer.id === customerData.id
     );
