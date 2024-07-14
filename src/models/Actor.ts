@@ -1,11 +1,12 @@
 import Movie from "./Movie";
+import Movies from "./Movies";
 import Person from "./Person";
 
 export default class Actor extends Person {
   private _startedAt: number;
   private _endedAt: number;
   private _cachet: number;
-  private _movies: Movie[];
+  private _movies: Movies;
 
   constructor(props: {
     firstname: string;
@@ -15,7 +16,7 @@ export default class Actor extends Person {
     startedAt: number;
     endedAt: number;
     cachet: number;
-    movies: Movie[];
+    movies: Movies;
   }) {
     super(props);
 
@@ -49,11 +50,11 @@ export default class Actor extends Person {
     this._cachet = value;
   }
 
-  public get movies(): Movie[] {
+  public get movies(): Movies {
     return this._movies;
   }
 
-  public set movies(value: Movie[]) {
+  public set movies(value: Movies) {
     this._movies = value;
   }
 }

@@ -1,16 +1,17 @@
+import Categories from "./Categories";
 import Category from "./Category";
 
 export default class Movie {
   private _name: string;
   private _duration: number;
   private _description: string;
-  private _categories: Category[];
+  private _categories: Categories;
 
   constructor(props: {
     name: string;
     duration: number;
     description: string;
-    categories: Category[];
+    categories: Categories;
   }) {
     this._name = props.name;
     this._duration = props.duration;
@@ -42,11 +43,11 @@ export default class Movie {
     this._duration = value;
   }
 
-  public get categories(): Category[] {
+  public get categories(): Categories {
     return this._categories;
   }
 
-  public set categories(value: Category[]) {
+  public set categories(value: Categories) {
     this._categories = value;
   }
 }

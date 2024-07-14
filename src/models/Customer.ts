@@ -1,28 +1,34 @@
-import CreditCard from "./CreditCard";
+import CreditCards from "./CreditCards";
 import Person from "./Person";
-import { md5 } from "js-md5";
 
 export default class Customer extends Person {
+  protected _id: number;
   protected _email: string;
   private _password: string;
   protected _inscriptionDate: number;
-  protected _creditCards: CreditCard[];
+  protected _creditCards: CreditCards;
 
   constructor(props: {
+    id: number;
     firstname: string;
     lastname: string;
     gender?: string;
     email: string;
     password: string;
     inscriptionDate: number;
-    creditCards: CreditCard[];
+    creditCards: CreditCards;
   }) {
     super(props);
 
+    this._id = props.id;
     this._email = props.email;
     this._password = props.password;
     this._inscriptionDate = props.inscriptionDate;
     this._creditCards = props.creditCards;
+  }
+
+  public get id(): number {
+    return this._id;
   }
 
   public get email(): string {
@@ -49,11 +55,11 @@ export default class Customer extends Person {
     this._inscriptionDate = value;
   }
 
-  public get creditCards(): CreditCard[] {
+  public get creditCards(): CreditCards {
     return this._creditCards;
   }
 
-  public set creditCards(value: CreditCard[]) {
+  public set creditCards(value: CreditCards) {
     this._creditCards = value;
   }
 }

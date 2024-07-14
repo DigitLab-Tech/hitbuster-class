@@ -17,10 +17,9 @@ export default async function authenticate(authData: AuthFormSchema) {
   }
 
   const password = md5(validatedAuthData.data.password);
-  const employe = employes.find(
-    (employe) =>
-      employe.userCode === validatedAuthData.data.username &&
-      employe.password === password
+  const employe = employes.getByUserCodeAndPassword(
+    validatedAuthData.data.username,
+    password
   );
 
   if (!employe) {
