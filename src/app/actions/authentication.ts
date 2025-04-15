@@ -1,40 +1,54 @@
 "use server";
 
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
+import { type AuthFormSchema } from "../schemas/authFormSchema";
 import { employes } from "@/data";
-import authFormSchema, { type AuthFormSchema } from "../schemas/authFormSchema";
+import Employe from "@/models/Employe";
 import { md5 } from "js-md5";
-import { cookies } from "next/headers";
-import { date } from "zod";
-import { redirect } from "next/navigation";
+import { neon } from '@neondatabase/serverless';
 
-export default async function authenticate(authData: AuthFormSchema) {
-  const validatedAuthData = authFormSchema.safeParse(authData);
-
-  if (!validatedAuthData.success) {
-    return {
-      msg: "Invalid form data.",
-    };
+export async function authenticate(
+  formData: AuthFormSchema,
+) {
+  function getEmploye(employeCode: string, password: string): Employe | null {
+    return employes.collection.find(employe => employe.userCode === employeCode && employe.password === md5(password)) || null;
   }
 
-  const password = md5(validatedAuthData.data.password);
-  const employe = employes.getByUserCodeAndPassword(
-    validatedAuthData.data.username,
-    password
-  );
+  const employe = getEmploye(formData.username, formData.password);
 
   if (!employe) {
-    return {
-      msg: "Could not find employe.",
-    };
+    return 'Invalid credentials'
   }
 
-  const date = new Date();
+  if (formData.otpKey === "AAAAAA") {
+    const sql = neon(`${process.env.NEON_DATABASE_URL}`);
+    const key = Math.floor(100000 + Math.random() * 900000);
 
-  cookies().set({
-    name: "access",
-    value: employe.access,
-    expires: date.setTime(date.getTime() + 60 * 1000 * 30),
-  });
+    try {
+      await sql`INSERT INTO otp (email, key)
+      VALUES (${employe.email}, ${key})
+      ON CONFLICT (email)
+      DO UPDATE SET key = ${key};`;
+    }
+    catch {
+      return 'Something went wrong.';
+    }
 
-  redirect("/");
+    return "OTP";
+  }
+
+  try {
+    await signIn('credentials', { redirectTo: "/dashboard", ...formData });
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
 }

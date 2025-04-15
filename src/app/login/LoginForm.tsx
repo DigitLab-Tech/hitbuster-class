@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Form,
   FormControl,
@@ -13,22 +12,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import authFormSchema from "../schemas/authFormSchema";
-import authenticate from "../actions/authentication";
+import authFormSchema, { AuthFormSchema } from "../schemas/authFormSchema";
+import { authenticate } from "../actions/authentication";
 import { useState } from "react";
 
 export default function LoginForm() {
-  const [responseMsg, setResponseMsg] = useState("");
-  const form = useForm<z.infer<typeof authFormSchema>>({
+  const [responseMsg, setResponseMsg] = useState<string | undefined>("");
+  const [showOTPField, setShowOTPField] = useState(false);
+  const form = useForm<AuthFormSchema>({
     resolver: zodResolver(authFormSchema),
     defaultValues: {
       username: "",
       password: "",
+      otpKey: "AAAAAA"
     },
   });
 
-  function onSubmit(values: z.infer<typeof authFormSchema>) {
-    authenticate(values).then((data) => setResponseMsg(data?.msg));
+  function onSubmit(values: AuthFormSchema) {
+    authenticate(values).then((data) => {
+      if (data === "OTP") {
+        form.setValue('otpKey', '');
+        setShowOTPField(true);
+        setResponseMsg("");
+      } else {
+        setResponseMsg(data);
+      }
+    });
   }
 
   return (
@@ -60,9 +69,24 @@ export default function LoginForm() {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="otpKey"
+          render={({ field }) => (
+            <FormItem className={showOTPField ? "" : "hidden"}>
+              <FormLabel>OTP Key</FormLabel>
+              <FormControl>
+                <Input type="text" {...field} autoComplete="off" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <div className="grid gap-3">
           <Button type="submit">Submit</Button>
-          <span>{responseMsg}</span>
+          <span className="text-red-600">{responseMsg}</span>
         </div>
       </form>
     </Form>

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cookies } from "next/headers";
-import MenuLink from "@/components/MenuLink";
 import { Button } from "@/components/ui/button";
-import disconnect from "./actions/disconnect";
+import { auth, signOut } from "@/auth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,30 +10,25 @@ export const metadata: Metadata = {
   title: "Hitbuster",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const access = cookies().get("access");
+  const session = await auth();
+
   return (
     <html lang="en">
       <body className={`bg-black flex text-white ${inter.className}`}>
-        {access && (
-          <div className="flex flex-col justify-between border-r min-w-[200px] min-h-screen py-6 px-3 border-[rgba(255,255,255,0.3)]">
-            <ul>
-              <li>
-                <MenuLink href="/">Dashboard</MenuLink>
-              </li>
-            </ul>
-          </div>
-        )}
         <div className="w-full relative">
-          <nav className="sticky bg-black z-10 top-0 left-0">
-            <form className="flex justify-end p-6" action={disconnect}>
+          {session?.user?.email && <nav className="sticky bg-black z-10 top-0 left-0">
+            <form className="flex justify-end p-6" action={async () => {
+              'use server';
+              await signOut({ redirectTo: '/' });
+            }}>
               <Button>Disconnect</Button>
             </form>
-          </nav>
+          </nav>}
           {children}
         </div>
       </body>

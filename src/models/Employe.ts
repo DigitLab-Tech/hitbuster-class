@@ -6,6 +6,7 @@ export default class Employe extends Person {
   private _userCode: string;
   private _password: string;
   private _access: string;
+  private _email: string;
 
   constructor(props: {
     firstname: string;
@@ -15,6 +16,7 @@ export default class Employe extends Person {
     startedAt: number;
     userCode: string;
     access: string;
+    email: string;
   }) {
     super(props);
 
@@ -22,6 +24,7 @@ export default class Employe extends Person {
     this._userCode = props.userCode;
     this._access = props.access;
     this._password = props.password;
+    this._email = props.email;
   }
 
   public get startedAt(): number {
@@ -54,5 +57,13 @@ export default class Employe extends Person {
 
   public set access(value: string) {
     this._access = value;
+  }
+
+  public get email(): string {
+    return this._email;
+  }
+
+  public set email(value: string) {
+    this._email = value;
   }
 }

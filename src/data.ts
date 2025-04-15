@@ -21,6 +21,7 @@ export const employes: Employes = new Employes([
     startedAt: 1622505600,
     userCode: "USR001",
     access: "admin",
+    email: "cedrick.plante@gmail.com"
   }),
   new Employe({
     firstname: "Bob",
@@ -30,6 +31,7 @@ export const employes: Employes = new Employes([
     startedAt: 1625097600,
     userCode: "USR002",
     access: "user",
+    email: "cedrick.plante+10@gmail.com",
   }),
   new Employe({
     firstname: "Charlie",
@@ -38,6 +40,7 @@ export const employes: Employes = new Employes([
     startedAt: 1627776000,
     userCode: "USR003",
     access: "user",
+    email: "cedrick.plante+10@gmail.com",
   }),
   new Employe({
     firstname: "Diana",
@@ -47,6 +50,7 @@ export const employes: Employes = new Employes([
     startedAt: 1630454400,
     userCode: "USR004",
     access: "admin",
+    email: "cedrick.plante+10@gmail.com",
   }),
   new Employe({
     firstname: "Eve",
@@ -55,6 +59,7 @@ export const employes: Employes = new Employes([
     startedAt: 1633046400,
     userCode: "USR005",
     access: "user",
+    email: "cedrick.plante+10@gmail.com",
   }),
 ]);
 

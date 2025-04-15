@@ -1,16 +1,9 @@
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import NextAuth from 'next-auth';
+import { authConfig } from '../auth.config';
 
-export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/_next")) {
-    return NextResponse.next();
-  }
+export default NextAuth(authConfig).auth;
 
-  if (
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !cookies().get("access")
-  ) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-}
+export const config = {
+  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+};
